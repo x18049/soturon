@@ -4,7 +4,7 @@
 //
 //  Created by x18049xx on 2021/09/01.
 //
-//コンパイル g++ ball_full_detection.cpp -std=c++11 `pkg-config --cflags --libs opencv4`
+//コンパイル g++ balldetection_full_detection.cpp -std=c++11 `pkg-config --cflags --libs opencv4`
 
 #include <stdio.h>
 #include<math.h>
@@ -77,17 +77,17 @@ cv::Mat absdiff_mask(cv::Mat src_img,cv::Mat backImage, int W, int H)
 
 
 
-//マウスイベント
-void mouse_callback(int event, int x, int y, int flags, void *userdata)
-{
-    if (event ==  cv::EVENT_LBUTTONDOWN) {
-    
-        std::cout << "(" << x << ", " << y << ")" <<  std::endl;
-        mouse_click = cv::Point2f(x, y);
-        translate[count_project] = mouse_click;
-        count_project ++;
-    }
-}
+////マウスイベント
+//void mouse_callback(int event, int x, int y, int flags, void *userdata)
+//{
+//    if (event ==  cv::EVENT_LBUTTONDOWN) {
+//
+//        std::cout << "(" << x << ", " << y << ")" <<  std::endl;
+//        mouse_click = cv::Point2f(x, y);
+//        translate[count_project] = mouse_click;
+//        count_project ++;
+//    }
+//}
 
 
 int main (int argc, const char* argv[])
@@ -232,22 +232,22 @@ int main (int argc, const char* argv[])
         }
         
         
-        if(4 > count_project){
-            cv::namedWindow("projection_img");
-            cv::moveWindow("projection_img", W, 0);
-            cv::imshow("projection_img",projection_img);
-            cv::setMouseCallback("projection_img", mouse_callback);
+//        if(4 > count_project){
+//            cv::namedWindow("projection_img");
+//            cv::moveWindow("projection_img", W, 0);
+//            cv::imshow("projection_img",projection_img);
+//            cv::setMouseCallback("projection_img", mouse_callback);
 //            cv::circle(projection_img,mouse_click,1,cv::Scalar(0,255,0),3);
-
-
-            continue;
-        }
+//
+//
+//            continue;
+//        }
         
         capture >> frameImage;
         frameImage.copyTo(testImage);
         frameImage.copyTo(move_image);
 
-//        frameImage.copyTo(hyoukaImage);
+        frameImage.copyTo(hyoukaImage);
 
         cv::Mat drawing = cv::Mat::zeros(H, W, CV_8UC3);
 
@@ -260,6 +260,7 @@ int main (int argc, const char* argv[])
             break;
         }
         
+        //射影変換
 //        cv::Mat persMat = cv::getPerspectiveTransform(translate, original); //行列生成
 //
 //        //行列要素表示(確認用)
@@ -267,21 +268,21 @@ int main (int argc, const char* argv[])
 //         printf("%f %f %f\n", persMat.at<double>(1,0), persMat.at<double>(1,1), persMat.at<double>(1,2));
 //         printf("%f %f %f\n", persMat.at<double>(2,0), persMat.at<double>(2,1), persMat.at<double>(2,2));
 //
-        if(translateImage.data == NULL){
-            persMat = cv::getPerspectiveTransform(translate, original); //行列生成
+//        if(translateImage.data == NULL){
+//            persMat = cv::getPerspectiveTransform(translate, original); //行列生成
             
             //行列要素表示(確認用)
 //             printf("%f %f %f\n", persMat.at<double>(0,0), persMat.at<double>(0,1), persMat.at<double>(0,2));
 //             printf("%f %f %f\n", persMat.at<double>(1,0), persMat.at<double>(1,1), persMat.at<double>(1,2));
 //             printf("%f %f %f\n", persMat.at<double>(2,0), persMat.at<double>(2,1), persMat.at<double>(2,2));
             
-            
-            cv::warpPerspective(projection_img, translateImage, persMat, projection_img.size(),
-            cv::INTER_LINEAR, cv::BORDER_CONSTANT, cv::Scalar(0,0,0));
-        }
+//
+//            cv::warpPerspective(projection_img, translateImage, persMat, projection_img.size(),
+//            cv::INTER_LINEAR, cv::BORDER_CONSTANT, cv::Scalar(0,0,0));
+//        }
 
-        cv::warpPerspective(testImage, testImage2, persMat, projection_img.size(),
-        cv::INTER_LINEAR, cv::BORDER_CONSTANT, cv::Scalar(0,0,0));
+//        cv::warpPerspective(testImage, testImage2, persMat, projection_img.size(),
+//        cv::INTER_LINEAR, cv::BORDER_CONSTANT, cv::Scalar(0,0,0));
         
         
 //        if (translate[0].x < translate[3].x)
@@ -415,19 +416,19 @@ int main (int argc, const char* argv[])
 
 //                 cv::circle(frameImage,center2,1,cv::Scalar(0,0,0),3);
                 //射影変換後の座標
-                cv::Mat m1 = (cv::Mat_<double>(3,1) << center2.x,center2.y,1);
-                projection_Coordinate = persMat * m1;
-                projection = cv::Point2f(projection_Coordinate.at<double>(0,0),projection_Coordinate.at<double>(1,0));
-                cv::circle(translateImage,projection,1,cv::Scalar(0,0,255),3);
+//                cv::Mat m1 = (cv::Mat_<double>(3,1) << center2.x,center2.y,1);
+//                projection_Coordinate = persMat * m1;
+//                projection = cv::Point2f(projection_Coordinate.at<double>(0,0),projection_Coordinate.at<double>(1,0));
+//                cv::circle(translateImage,projection,1,cv::Scalar(0,0,255),3);
 
 
-                cv::rectangle(translateImage,cv::Point(projection.x-5 , projection.y-5),cv::Point(projection.x+5,projection.y+5),cv::Scalar(0,0,255), 1, 4);
+//                cv::rectangle(translateImage,cv::Point(projection.x-5 , projection.y-5),cv::Point(projection.x+5,projection.y+5),cv::Scalar(0,0,255), 1, 4);
                 
 //                cv::rectangle(testImage2,cv::Point(projection.x-5 , projection.y-5),cv::Point(projection.x+5,projection.y+5),cv::Scalar(0,0,200), 1, 4);
 
-                printf("フレーム数:%d x:%lf y:%lf \n",j,projection.x,projection.y);
+//                printf("フレーム数:%d x:%lf y:%lf \n",j,projection.x,projection.y);
                 
-                cv::rectangle(testImage3,cv::Point(projection.x-5 , projection.y-5),cv::Point(projection.x+5,projection.y+5),cv::Scalar(0,0,255), 1, 4);
+//                cv::rectangle(testImage3,cv::Point(projection.x-5 , projection.y-5),cv::Point(projection.x+5,projection.y+5),cv::Scalar(0,0,255), 1, 4);
 
                 
 
@@ -483,37 +484,36 @@ int main (int argc, const char* argv[])
 //        cv::circle(result_img,translate,1,cv::Scalar(0,255,0),3);
 
         
-        cv::namedWindow("result_img");
-        cv::moveWindow("result_img", W*3, 0);
-        cv::imshow("result_img",result_img);
-        cv::setMouseCallback("result_img", mouse_callback);
-        
-        cv::namedWindow("translateImage");
-        cv::moveWindow("translateImage", W*2, 0);
-        cv::imshow("translateImage",translateImage);
-
-        cv::namedWindow("move_image");
-        cv::moveWindow("move_image", 0, H+20);
-        cv::imshow("move_image",move_image);
-        
-        if(!(testImage3.data == NULL)){
-            cv::namedWindow("testImage3");
-            cv::moveWindow("testImage3", W, H+20);
-            cv::imshow("testImage3",testImage3);
-            
+//        cv::namedWindow("result_img");
+//        cv::moveWindow("result_img", W*3, 0);
+//        cv::imshow("result_img",result_img);
+//
+//        cv::namedWindow("translateImage");
+//        cv::moveWindow("translateImage", W*2, 0);
+//        cv::imshow("translateImage",translateImage);
+//
+//        cv::namedWindow("move_image");
+//        cv::moveWindow("move_image", 0, H+20);
+//        cv::imshow("move_image",move_image);
+//
+//        if(!(testImage3.data == NULL)){
+//            cv::namedWindow("testImage3");
+//            cv::moveWindow("testImage3", W, H+20);
+//            cv::imshow("testImage3",testImage3);
+//
 //            std::ostringstream oss2;
 //            oss2 << std::setfill( '0' ) << std::setw( 3 ) << name_count2++;
 //            cv::imwrite( "hyouka-full/12/result_img2/output_12_" + oss2.str() + ".png", hyoukaImage );
 
-        }
+//        }
         
-        if(!(hyoukaImage.data == NULL)){
+//        if(!(hyoukaImage.data == NULL)){
             
             cv::imshow("hyoukaImage",hyoukaImage);
-            std::ostringstream oss2;
-            oss2 << std::setfill( '0' ) << std::setw( 3 ) << name_count2++;
+//            std::ostringstream oss2;
+//            oss2 << std::setfill( '0' ) << std::setw( 3 ) << name_count2++;
 //            cv::imwrite( "move/output_6_" + oss2.str() + ".png", move_image );
-        }
+//        }
         
         
 //        testImage3 = testImage2;
@@ -555,56 +555,56 @@ int main (int argc, const char* argv[])
 
 
     //---Gnuplotを起動---
-    gp = popen("gnuplot -persist", "w");
-    
-    //ラベル名
-    fprintf(gp, "set xlabel \"フレーム数\n");
-    fprintf(gp, "set ylabel \"移動距離\n");
-    
-    //---座標の入力---
-    fprintf(gp, "set xrange [0:%d]\n",count);
-    fprintf(gp, "set xrange [0:%d]\n",count);
-
-//    fprintf(gp, "set yrange [-300:300]\n");
-
-    //---Gnuplotのコマンドを実行---
-    fprintf(gp, "plot \"%s\" with lines linetype 1 title \"移動体の移動距離\"\n",data_file);
-
-    pclose(gp);
-
-
-//    ファイル表示
-//    読み込み
-
-    if((fi = fopen(data_file,"r"))==NULL)
-    {
-        //表示失敗
-        printf("ファイルがありません");
-    }else{
-
-        while(fscanf(fi,"%lf%lf",&frame,&move)==2)
-        {
-        //ファイルを出力
-            printf("%lf %lf\n",frame,move);
-            if(move > 0)
-            {
-                total_xp += move;
-                x1 ++;
-            }else if(move < 0)
-            {
-                total_xm += move;
-                x2++;
-            }
-
-        }
-        ave_xp = total_xp/x1;
-        ave_xm = total_xm/x2;
-        printf("---平均を表示する---\n");
-        printf("プラスの平均:%lf\n",ave_xp);
-      printf("マイナスの平均:%lf\n",ave_xm);
-        //ファイルを閉じる
-        fclose(fi);
-    }
+//    gp = popen("gnuplot -persist", "w");
+//
+//    //ラベル名
+//    fprintf(gp, "set xlabel \"フレーム数\n");
+//    fprintf(gp, "set ylabel \"移動距離\n");
+//
+//    //---座標の入力---
+//    fprintf(gp, "set xrange [0:%d]\n",count);
+//    fprintf(gp, "set xrange [0:%d]\n",count);
+//
+////    fprintf(gp, "set yrange [-300:300]\n");
+//
+//    //---Gnuplotのコマンドを実行---
+//    fprintf(gp, "plot \"%s\" with lines linetype 1 title \"移動体の移動距離\"\n",data_file);
+//
+//    pclose(gp);
+//
+//
+////    ファイル表示
+////    読み込み
+//
+//    if((fi = fopen(data_file,"r"))==NULL)
+//    {
+//        //表示失敗
+//        printf("ファイルがありません");
+//    }else{
+//
+//        while(fscanf(fi,"%lf%lf",&frame,&move)==2)
+//        {
+//        //ファイルを出力
+//            printf("%lf %lf\n",frame,move);
+//            if(move > 0)
+//            {
+//                total_xp += move;
+//                x1 ++;
+//            }else if(move < 0)
+//            {
+//                total_xm += move;
+//                x2++;
+//            }
+//
+//        }
+//        ave_xp = total_xp/x1;
+//        ave_xm = total_xm/x2;
+//        printf("---平均を表示する---\n");
+//        printf("プラスの平均:%lf\n",ave_xp);
+//      printf("マイナスの平均:%lf\n",ave_xm);
+//        //ファイルを閉じる
+//        fclose(fi);
+//    }
 
     
     
